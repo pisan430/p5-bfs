@@ -5,13 +5,17 @@
 #include "bfs.h"
 #include "fs.h"
 
+// Global Open File Table Entry array
+// defined in bfs.c
+extern OFTE g_oft[NUMOFTENTRIES];
+
 // ============================================================================
 // Close the file currently open on file descriptor 'fd'.
 // ============================================================================
-i32 fsClose(i32 fd) { 
+i32 fsClose(i32 fd) {
   i32 inum = bfsFdToInum(fd);
   bfsDerefOFT(inum);
-  return 0; 
+  return 0;
 }
 
 
@@ -29,7 +33,7 @@ i32 fsCreate(str fname) {
 
 
 // ============================================================================
-// Format the BFS disk by initializing the SuperBlock, Inodes, Directory and 
+// Format the BFS disk by initializing the SuperBlock, Inodes, Directory and
 // Freelist.  On succes, return 0.  On failure, abort
 // ============================================================================
 i32 fsFormat() {
@@ -66,7 +70,7 @@ i32 fsMount() {
 
 
 // ============================================================================
-// Open the existing file called 'fname'.  On success, return its file 
+// Open the existing file called 'fname'.  On success, return its file
 // descriptor.  On failure, return EFNF
 // ============================================================================
 i32 fsOpen(str fname) {
@@ -106,10 +110,10 @@ i32 fsRead(i32 fd, i32 numb, void* buf) {
 i32 fsSeek(i32 fd, i32 offset, i32 whence) {
 
   if (offset < 0) FATAL(EBADCURS);
- 
+
   i32 inum = bfsFdToInum(fd);
   i32 ofte = bfsFindOFTE(inum);
-  
+
   switch(whence) {
     case SEEK_SET:
       g_oft[ofte].curs = offset;
